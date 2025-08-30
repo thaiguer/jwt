@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace JwtAspNet.Services;
@@ -16,6 +17,9 @@ public class TokenService
             SigningCredentials = signingCredentials,
             Expires = DateTime.UtcNow.AddHours(12)
         };
+
+        new Claim(ClaimTypes.Name, "");
+        new Claim(ClaimTypes.Role, "");
 
         var handler = new JwtSecurityTokenHandler();
         var token = handler.CreateToken(securityTokenDescriptor);
