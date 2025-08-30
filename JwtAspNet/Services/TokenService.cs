@@ -8,7 +8,7 @@ namespace JwtAspNet.Services;
 
 public class TokenService
 {
-    public string CreateToken()
+    public string CreateToken(User user)
     {
         var byteKey = Encoding.ASCII.GetBytes(Configuration.PrivateKey);
         var symmetricSecurityKey = new SymmetricSecurityKey(byteKey);
@@ -16,7 +16,8 @@ public class TokenService
         var securityTokenDescriptor = new SecurityTokenDescriptor
         {
             SigningCredentials = signingCredentials,
-            Expires = DateTime.UtcNow.AddHours(12)
+            Expires = DateTime.UtcNow.AddHours(12),
+            Subject = GenerateClaims(user)
         };
 
         var handler = new JwtSecurityTokenHandler();
@@ -27,8 +28,15 @@ public class TokenService
     private ClaimsIdentity GenerateClaims(User user)
     {
         var claimsIdentity = new ClaimsIdentity();
+        claimsIdentity.AddClaim(new Claim("Id", user.Id.ToString()));
+        claimsIdentity.AddClaim(new Claim(ClaimTypes.GivenName, user.Name));
         claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.Email));
-        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Name));
+        claimsIdentity.AddClaim(new Claim("Image", user.Image));
+
+        foreach(var role in user.Roles)
+        {
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+        }
 
         return claimsIdentity;
     }

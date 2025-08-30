@@ -1,3 +1,4 @@
+using JwtAspNet.Models;
 using JwtAspNet.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,5 +12,13 @@ app.Run();
 
 string GetToken (TokenService tokenService)
 {
-    return tokenService.CreateToken();
+    var user = new User(
+        42,
+        "Alphafa",
+        "abc@alphabet.com",
+        "",
+        "123456",
+        new[] {"student", "premium" });
+    
+    return tokenService.CreateToken(user);
 }
