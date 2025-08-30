@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using JwtAspNet.Models;
 
 namespace JwtAspNet.Services;
 
@@ -18,11 +19,17 @@ public class TokenService
             Expires = DateTime.UtcNow.AddHours(12)
         };
 
-        new Claim(ClaimTypes.Name, "");
-        new Claim(ClaimTypes.Role, "");
-
         var handler = new JwtSecurityTokenHandler();
         var token = handler.CreateToken(securityTokenDescriptor);
         return handler.WriteToken(token);
+    }
+
+    private ClaimsIdentity GenerateClaims(User user)
+    {
+        var claimsIdentity = new ClaimsIdentity();
+        claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.Email));
+        claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Name));
+
+        return claimsIdentity;
     }
 }
