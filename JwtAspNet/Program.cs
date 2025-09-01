@@ -22,7 +22,10 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = false
     };
 });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(x =>
+{
+    x.AddPolicy("Admin", p => p.RequireRole("admin"));
+});
 
 var app = builder.Build();
 app.UseAuthentication();
@@ -31,6 +34,7 @@ app.UseAuthorization();
 app.MapGet("/", () => "Hello");
 app.MapGet("/login", GetToken);
 app.MapGet("/restrito", () => "Segredo").RequireAuthorization();
+app.MapGet("/admin", () => "Admin only").RequireAuthorization("Admin");
 app.Run();
 string GetToken (TokenService tokenService)
 {
@@ -40,7 +44,7 @@ string GetToken (TokenService tokenService)
         "abc@alphabet.com",
         "",
         "123456",
-        new[] {"student", "premium" });
+        new[] {"student", "premium", "admin" });
     
     return tokenService.CreateToken(user);
 }
