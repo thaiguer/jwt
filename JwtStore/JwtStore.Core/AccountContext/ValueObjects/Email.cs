@@ -8,6 +8,11 @@ public partial class Email : ValueObject
 {
     private const string Pattern = @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
 
+    protected Email()
+    {
+
+    }
+
     public Email(string address)
     {
         if(string.IsNullOrEmpty(address))
